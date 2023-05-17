@@ -37,17 +37,25 @@ runs:
         --json
     - run: sleep 5
       shell: bash 
+    - name: get run id
+      id: run
+      shell: bash
+      run: |
+        echo "run_id=$(gh run list \
+        --workflow=${{ inputs.workflow }} \
+        --limit 1 \
+        --json databaseId \
+        --jq '.[].databaseId' \
+        --repo ${{ inputs.repo }})" > "$GITHUB_OUTPUT"
+    - name: print run link
+      shell: bash
+      run: |
+        echo ${{ github.server_url }}/${{ inputs.repo }}/actions/runs/${{ steps.run.outputs.run_id }}
     - name: follow workflow with gh run watch 
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }} 
       run: |
-        run_id=$(gh run list \
-        --workflow=${{ inputs.workflow }} \
-        --limit 1 \
-        --json databaseId \
-        --jq '.[].databaseId' \
-        --repo ${{ inputs.repo }})
-        gh run watch "${run_id}" \
+        gh run watch ${{ steps.run.outputs.run_id }} \
         --exit-status \
         --repo "${{ inputs.repo }}"
