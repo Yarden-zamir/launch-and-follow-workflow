@@ -31,7 +31,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}  
       run: |
-        echo ${{ inputs.inputs }} | gh workflow run ${{ inputs.workflow }} \
+        echo '${{ inputs.inputs }}' | gh workflow run ${{ inputs.workflow }} \
         --repo ${{ inputs.repo }} \
         --ref ${{ inputs.ref }} \
         --json
