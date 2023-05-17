@@ -25,11 +25,11 @@ inputs:
     default: '${{ github.repository }}'
 runs:
   using: composite
-  env:
-    GITHUB_TOKEN: ${{ inputs.token }}
   steps:
     - name: run workflow with gh workflow run
-      shell: bash  
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}  
       run: |
         echo ${{ inputs.inputs }} | gh workflow run ${{ inputs.workflow }} \
         --repo ${{ inputs.repo }} \
@@ -38,7 +38,9 @@ runs:
     - run: sleep 5
       shell: bash 
     - name: follow workflow with gh run watch 
-      shell: bash 
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }} 
       run: |
         run_id=$(gh run list --workflow=${{ inputs.workflow }} --limit 1 --json databaseId --jq '.[].databaseId')
         gh run watch "${run_id}" --exit-status --repo "${{ inputs.repo }}"
