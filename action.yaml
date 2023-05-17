@@ -1,0 +1,30 @@
+name: Launch and follow workflow
+description: Launch a workflow and follow it until it completes
+branding:
+  icon: 'arrow-circle-up'
+  color: 'green'
+inputs:
+  github_token:
+    description: 'The GitHub token to use for authentication'
+    required: true
+    default: '${{ github.token }}'
+  repo:
+    description: 'The repository to run the workflow in'
+    required: true
+    default: '${{ github.repository }}'
+  workflow:
+    description: 'The workflow to run'
+    required: true
+  workflow_ref:
+    description: 'The ref to run the workflow from (defaults to main)'
+    required: false
+    default: 'main'
+runs:
+  using: composite
+  steps:
+    - run: |
+        gh workflow run ${{ inputs.workflow }} --repo ${{ inputs.repo }} --ref ${{ inputs.workflow_ref }}
+        sleep 5
+        run_id=$(gh run list --workflow=${{ inputs.workflow }} --limit 1 --json databaseId --jq '.[].databaseId')
+        gh run watch "${run_id}" --exit-status --repo "${repo}"
+      shell: bash
