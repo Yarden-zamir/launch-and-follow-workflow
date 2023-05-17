@@ -19,12 +19,25 @@ inputs:
     description: 'The ref to run the workflow from (defaults to main)'
     required: false
     default: 'main'
+  workflow_input_json:
+    description: 'The JSON to pass as input to the workflow'
+    required: false
 runs:
   using: composite
   steps:
-    - run: |
-        gh workflow run ${{ inputs.workflow }} --repo ${{ inputs.repo }} --ref ${{ inputs.workflow_ref }}
-        sleep 5
+    - name: run workflow with gh workflow run
+      shell: bash  
+      run: |
+        # if workflow_input_json is not set, don't use --json
+        if [ -z "${{ inputs.workflow_input_json }}" ]; then
+          gh workflow run ${{ inputs.workflow }} --repo ${{ inputs.repo }} --ref ${{ inputs.workflow_ref }}
+        else
+          echo ${{ workflow_input_json }} | gh workflow run ${{ inputs.workflow }} --repo ${{ inputs.repo }} --ref ${{ inputs.workflow_ref }} --json ${{ inputs.workflow_input_json }}
+        fi
+    - run: sleep 5
+      shell: bash 
+    - name: follow workflow with gh run watch 
+      shell: bash 
+      run: |
         run_id=$(gh run list --workflow=${{ inputs.workflow }} --limit 1 --json databaseId --jq '.[].databaseId')
-        gh run watch "${run_id}" --exit-status --repo "${repo}"
-      shell: bash
+        gh run watch "${run_id}" --exit-status --repo "${{ inputs.repo }}"
