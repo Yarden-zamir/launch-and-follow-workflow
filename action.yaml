@@ -1,5 +1,7 @@
 name: Launch and follow workflow
 description: Launch a workflow and follow it until it completes
+env:
+  GITHUB_TOKEN: ${{ inputs.token }} 
 branding:
   icon: 'arrow-circle-up'
   color: 'green'
@@ -28,8 +30,6 @@ runs:
   steps:
     - name: run workflow with gh workflow run
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}  
       run: |
         echo '${{ inputs.inputs }}' | gh workflow run ${{ inputs.workflow }} \
         --repo ${{ inputs.repo }} \
@@ -53,8 +53,6 @@ runs:
         echo ${{ github.server_url }}/${{ inputs.repo }}/actions/runs/${{ steps.run.outputs.run_id }}
     - name: follow workflow with gh run watch 
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }} 
       run: |
         gh run watch ${{ steps.run.outputs.run_id }} \
         --exit-status \
