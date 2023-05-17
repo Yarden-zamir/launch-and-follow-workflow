@@ -25,6 +25,8 @@ inputs:
     default: '${{ github.repository }}'
 runs:
   using: composite
+  env:
+    GITHUB_TOKEN: ${{ inputs.token }}
   steps:
     - name: run workflow with gh workflow run
       shell: bash  
