@@ -4,36 +4,35 @@ branding:
   icon: 'arrow-circle-up'
   color: 'green'
 inputs:
-  github_token:
+  workflow:
+    description: 'The workflow to run'
+    required: true
+  token:
     description: 'The GitHub token to use for authentication'
     required: true
     default: '${{ github.token }}'
+  inputs:
+    description: 'The JSON to pass as input to the workflow'
+    required: true
+    default: '{}'
+  ref:
+    description: 'The ref to run the workflow from (defaults to main)'
+    required: false
+    default: 'main'
   repo:
     description: 'The repository to run the workflow in'
     required: true
     default: '${{ github.repository }}'
-  workflow:
-    description: 'The workflow to run'
-    required: true
-  workflow_ref:
-    description: 'The ref to run the workflow from (defaults to main)'
-    required: false
-    default: 'main'
-  workflow_input_json:
-    description: 'The JSON to pass as input to the workflow'
-    required: false
 runs:
   using: composite
   steps:
     - name: run workflow with gh workflow run
       shell: bash  
       run: |
-        # if workflow_input_json is not set, don't use --json
-        if [ -z "${{ inputs.workflow_input_json }}" ]; then
-          gh workflow run ${{ inputs.workflow }} --repo ${{ inputs.repo }} --ref ${{ inputs.workflow_ref }}
-        else
-          echo ${{ workflow_input_json }} | gh workflow run ${{ inputs.workflow }} --repo ${{ inputs.repo }} --ref ${{ inputs.workflow_ref }} --json ${{ inputs.workflow_input_json }}
-        fi
+        echo ${{ inputs.inputs }} | gh workflow run ${{ inputs.workflow }} \
+        --repo ${{ inputs.repo }} \
+        --ref ${{ inputs.ref }} \
+        --json
     - run: sleep 5
       shell: bash 
     - name: follow workflow with gh run watch 
