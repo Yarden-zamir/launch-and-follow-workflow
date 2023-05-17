@@ -42,5 +42,10 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }} 
       run: |
-        run_id=$(gh run list --workflow=${{ inputs.workflow }} --limit 1 --json databaseId --jq '.[].databaseId')
+        run_id=$(gh run list \
+        --workflow=${{ inputs.workflow }} \
+        --limit 1 \
+        --json databaseId \
+        --jq '.[].databaseId' \
+        --repo ${{ inputs.repo }})
         gh run watch "${run_id}" --exit-status --repo "${{ inputs.repo }}"
