@@ -48,4 +48,6 @@ runs:
         --json databaseId \
         --jq '.[].databaseId' \
         --repo ${{ inputs.repo }})
-        gh run watch "${run_id}" --exit-status --repo "${{ inputs.repo }}"
+        gh run watch "${run_id}" \
+        --exit-status \
+        --repo "${{ inputs.repo }}"
