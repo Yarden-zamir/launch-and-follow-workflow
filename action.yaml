@@ -1,7 +1,5 @@
 name: Launch and follow workflow
 description: Launch a workflow and follow it until it completes
-env:
-  GITHUB_TOKEN: ${{ inputs.token }} 
 branding:
   icon: 'arrow-circle-up'
   color: 'green'
@@ -27,6 +25,8 @@ inputs:
     default: '${{ github.repository }}'
 runs:
   using: composite
+  env:
+    GITHUB_TOKEN: ${{ inputs.token }} 
   steps:
     - name: run workflow with gh workflow run
       shell: bash
