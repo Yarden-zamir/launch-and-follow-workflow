@@ -1,7 +1,7 @@
 name: Launch and follow workflow
 description: Launch a workflow and follow it until it completes
 branding:
-  icon: 'arrow-circle-up'
+  icon: 'arrow-up-right'
   color: 'green'
 inputs:
   workflow:
