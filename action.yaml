@@ -27,6 +27,10 @@ inputs:
     description: 'The interval to check for updates to the workflow run'
     required: true
     default: 8
+  follow_workflow:
+    description: 'Whether to follow the workflow run'
+    required: true
+    default: true
 runs:
   using: composite
   steps:
@@ -59,6 +63,7 @@ runs:
         echo ${{ github.server_url }}/${{ inputs.repo }}/actions/runs/${{ steps.run.outputs.run_id }}
     - name: follow workflow with gh run watch 
       shell: bash
+      if: ${{ inputs.follow_workflow }}
       run: |
         gh run watch ${{ steps.run.outputs.run_id }} \
         --exit-status \
@@ -66,3 +71,7 @@ runs:
         --repo "${{ inputs.repo }}"
       env:
         GITHUB_TOKEN: ${{ inputs.token }} 
+    - name: print run link
+      shell: bash
+      run: |
+        echo ${{ github.server_url }}/${{ inputs.repo }}/actions/runs/${{ steps.run.outputs.run_id }}
