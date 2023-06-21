@@ -18,7 +18,7 @@ inputs:
   ref:
     description: 'The ref to run the workflow from (defaults to main)'
     required: false
-    default: 'main'
+    default: ${{ github.ref || 'main' }}
   repo:
     description: 'The repository to run the workflow in'
     required: true
