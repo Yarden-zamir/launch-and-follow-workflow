@@ -31,6 +31,10 @@ inputs:
     description: 'Whether to follow the workflow run'
     required: true
     default: true
+  redirect_output_to_null:
+    description: 'Whether to redirect the output of the workflow run to /dev/null'
+    required: false
+    default: true
 runs:
   using: composite
   steps:
@@ -68,7 +72,8 @@ runs:
         gh run watch ${{ steps.run.outputs.run_id }} \
         --exit-status \
         --interval ${{ inputs.update_interval }} \
-        --repo "${{ inputs.repo }}"
+        --repo "${{ inputs.repo }}" \
+        ${{ inputs.redirect_output_to_null && '> /dev/null' || '' }}
       env:
         GITHUB_TOKEN: ${{ inputs.token }} 
     - name: print run link
