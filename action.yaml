@@ -34,7 +34,7 @@ inputs:
   redirect_output_to_null:
     description: 'Whether to redirect the output of the workflow run to /dev/null'
     required: false
-    default: false
+    default: true
 runs:
   using: composite
   steps:
